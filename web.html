@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smartwatch Data Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f3057;
+      --accent: #f9a826;
+      --bg: #e0f7fa;
+      --card-bg: #ffffff;
+      --font-main: 'Playfair Display', serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-main);
+      background-color: var(--bg);
+      color: var(--primary);
+    }
+
+    header {
+      background-color: var(--accent);
+      color: #fff;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 1.5rem;
+      transition: transform 0.2s, background-color 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background-color: #fff8e1;
+    }
+
+    .feedback {
+      margin-top: 1rem;
+    }
+
+    textarea, input[type="number"], input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 0.5rem;
+      font-family: var(--font-main);
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: none;
+      margin-bottom: 0.5rem;
+    }
+
+    button {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #f57c00;
+    }
+
+    .profile-section {
+      background-color: var(--card-bg);
+      margin: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .profile img {
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+    }
+
+    .share-section {
+      margin-top: 1rem;
+    }
+
+    .shared-card {
+      background-color: #fff3e0;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .no-device {
+      text-align: center;
+      font-style: italic;
+      margin-top: 1rem;
+      color: #d32f2f;
+    }
+
+    .manual-input {
+      background-color: var(--card-bg);
+      padding: 1rem;
+      margin: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .signup-section {
+      background-color: var(--card-bg);
+      margin: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @media screen and (max-width: 480px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      .profile-section {
+        margin: 0.5rem;
+        padding: 0.5rem;
+      }
+
+      .manual-input, .feedback .card, .signup-section {
+        margin: 0.5rem;
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Smartwatch Live Data Dashboard</h1>
+    <p>Sharing real-time stats to improve your experience</p>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h2>Heart Rate</h2>
+      <p id="heartRate">-- bpm</p>
+    </div>
+    <div class="card">
+      <h2>Step Count</h2>
+      <p id="steps">-- steps</p>
+    </div>
+    <div class="card">
+      <h2>Sleep Duration</h2>
+      <p id="sleep">-- hrs</p>
+    </div>
+    <div class="card">
+      <h2>Calories Burned</h2>
+      <p id="calories">-- kcal</p>
+    </div>
+  </main>
+
+  <p id="deviceStatus" class="no-device">No smartwatch connected. Please connect a device to view live data.</p>
+
+  <section class="manual-input">
+    <h2>Enter Your Data Manually</h2>
+    <label>Heart Rate (bpm):</label>
+    <input type="number" id="manualHeart" placeholder="Enter heart rate">
+    <label>Steps:</label>
+    <input type="number" id="manualSteps" placeholder="Enter steps">
+    <label>Sleep Duration (hrs):</label>
+    <input type="number" step="0.1" id="manualSleep" placeholder="Enter sleep duration">
+    <label>Calories Burned (kcal):</label>
+    <input type="number" id="manualCalories" placeholder="Enter calories">
+    <button onclick="submitManualData()">Update Dashboard</button>
+  </section>
+
+  <section class="signup-section">
+    <h2>Sign Up</h2>
+    <input type="text" placeholder="Name">
+    <input type="email" placeholder="Email">
+    <input type="password" placeholder="Password">
+    <button onclick="alert('Account created successfully!')">Create Account</button>
+  </section>
+
+  <section class="container feedback">
+    <div class="card">
+      <h2>Help Us Improve</h2>
+      <textarea placeholder="Your feedback..." id="feedbackText"></textarea>
+      <button onclick="submitFeedback()">Submit</button>
+    </div>
+  </section>
+
+  <section class="profile-section">
+    <h2>Mock Profiles</h2>
+
+    <div class="profile">
+      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Gireesh Profile Picture">
+      <div>
+        <h3>Gireesh</h3>
+        <p>Marathon Runner | Sharing training insights</p>
+      </div>
+    </div>
+    <div class="share-section">
+      <h3>Shared Data</h3>
+      <div class="shared-card">
+        <strong>Heart Rate:</strong> 82 bpm<br>
+        <strong>Steps:</strong> 9,200 steps<br>
+        <strong>Sleep:</strong> 7.2 hrs<br>
+        <strong>Calories:</strong> 2,150 kcal
+      </div>
+    </div>
+
+    <div class="profile">
+      <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Azam Profile Picture">
+      <div>
+        <h3>Azam</h3>
+        <p>Tech Explorer | Tracking wellness and activity</p>
+      </div>
+    </div>
+    <div class="share-section">
+      <h3>Shared Data</h3>
+      <div class="shared-card">
+        <strong>Heart Rate:</strong> 76 bpm<br>
+        <strong>Steps:</strong> 6,800 steps<br>
+        <strong>Sleep:</strong> 6.5 hrs<br>
+        <strong>Calories:</strong> 1,720 kcal
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let isSmartwatchConnected = false;
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function updateData() {
+      if (!isSmartwatchConnected) return;
+      document.getElementById('heartRate').textContent = getRandomInt(60, 100) + ' bpm';
+      document.getElementById('steps').textContent = getRandomInt(2000, 10000) + ' steps';
+      document.getElementById('sleep').textContent = (Math.random() * 4 + 4).toFixed(1) + ' hrs';
+      document.getElementById('calories').textContent = getRandomInt(500, 2500) + ' kcal';
+    }
+
+    function submitManualData() {
+      const heart = parseInt(document.getElementById('manualHeart').value);
+      const steps = parseInt(document.getElementById('manualSteps').value);
+      const sleep = parseFloat(document.getElementById('manualSleep').value);
+      const calories = parseInt(document.getElementById('manualCalories').value);
+
+      if (heart && (heart < 30 || heart > 220)) {
+        alert("Please enter a valid heart rate between 30 and 220 bpm.");
+        return;
+      }
+      if (steps && steps < 0) {
+        alert("Step count cannot be negative.");
+        return;
+      }
+      if (sleep && (sleep < 0 || sleep > 24)) {
+        alert("Please enter a valid sleep duration between 0 and 24 hours.");
+        return;
+      }
+      if (calories && calories < 0) {
+        alert("Calories burned cannot be negative.");
+        return;
+      }
+
+      if (heart) document.getElementById('heartRate').textContent = heart + ' bpm';
+      if (steps) document.getElementById('steps').textContent = steps + ' steps';
+      if (sleep) document.getElementById('sleep').textContent = sleep + ' hrs';
+      if (calories) document.getElementById('calories').textContent = calories + ' kcal';
+
+      document.getElementById('deviceStatus').style.display = 'none';
+    }
+
+    function submitFeedback() {
+      const feedback = document.getElementById('feedbackText').value;
+      if (feedback.trim()) {
+        alert("Thank you for your feedback!");
+        document.getElementById('feedbackText').value = "";
+      } else {
+        alert("Please enter your feedback before submitting.");
+      }
+    }
+
+    setInterval(updateData, 2000);
+  </script>
+</body>
+</html>
